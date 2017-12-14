@@ -11,6 +11,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/placeholder"
+            android:id="@+id/preview_image"
+            android:layout_margin="4dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose Image"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:id="@+id/choose_image_button"
+                android:layout_margin="4dp"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Image"
+                android:layout_margin="4dp"
+                android:background="@color/colorPrimary"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:id="@+id/edit_button_buttton"
+                android:layout_weight="1"/>
+        </LinearLayout>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,12 +62,12 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Choose Image"
+                android:text="Add Text"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
-                android:id="@+id/choose_image_button"
+                android:id="@+id/add_text_button"
                 android:layout_margin="4dp"/>
             <Button
                 android:layout_width="wrap_content"
@@ -50,11 +81,6 @@
                 android:layout_weight="1"/>
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/placeholder"
-            android:id="@+id/preview_image"
-            android:layout_margin="4dp"/>
+
     </LinearLayout>
 </ScrollView>

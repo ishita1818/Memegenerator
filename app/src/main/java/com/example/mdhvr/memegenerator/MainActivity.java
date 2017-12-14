@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -18,6 +19,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -63,13 +67,40 @@ public class MainActivity extends AppCompatActivity {
                 if(bitmap2!=null){
                 Log.e("value",bitmap2.isMutable()+" ");
                 Canvas canvas = new Canvas(bitmap2);
-                Paint paint= new Paint();
-                paint.setColor(Color.BLACK);
-                paint.setTextSize(70);
-                paint.setTextAlign(Paint.Align.CENTER);
+                    Paint paint= new Paint();
+                    paint.setColor(Color.WHITE);
+                    paint.setTextSize(getResources().getDimensionPixelSize(R.dimen.myFontSize));
+                    paint.setFakeBoldText(true);
+                    Typeface typeface= Typeface.createFromAsset(getAssets(),"impact.ttf");
+                    paint.setTypeface(typeface);
+
+                    paint.setTextAlign(Paint.Align.CENTER);
+                    //TextPaint mTextPaint=new TextPaint();
+                    TextPaint t= new TextPaint(paint);
+                    t.setShadowLayer(3,2,2, Color.BLACK);
+                    StaticLayout mTopTextLayout = new StaticLayout(top_text.getText().toString(),t,
+                            canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+
+                    //canvas.save();
+                    // calculate x and y position where your text will be placed
+
+                    int textX = canvas.getWidth()/2;
+                    int textY = 50;
+
+                    canvas.translate(textX, textY);
+                    mTopTextLayout.draw(canvas);
+                    StaticLayout mBottomTextLayout = new StaticLayout(bottom_text.getText().toString(),t,
+                            canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL,1.0f,0.0f,false);
+                    //canvas.save();
+                    int y= canvas.getHeight()-200;
+                    canvas.translate(1,y);
+                    mBottomTextLayout.draw(canvas);
+                    //canvas.restore();
+                /**
+
                 int x= canvas.getWidth()/2;
                 canvas.drawText(top_text.getText().toString(),x,100,paint);
-                canvas.drawText(bottom_text.getText().toString(),x,canvas.getHeight()-30,paint);
+                canvas.drawText(bottom_text.getText().toString(),x,canvas.getHeight()-30,paint);**/
                 imageView.setImageBitmap(bitmap2);
                 }
                 else
