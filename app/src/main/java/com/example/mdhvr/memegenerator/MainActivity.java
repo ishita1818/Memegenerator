@@ -33,16 +33,20 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private static final int READ_STORAGE_PERMISSION_REQUEST_CODE = 100;
-    private Bitmap bitmap =null;
     private Context context;
+    public static Bitmap mutableBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context= getApplicationContext();
+
         Button choose_image_button= findViewById(R.id.choose_image_button);
         Button preview_button= findViewById(R.id.preview_buttton);
+        Button edit_button= findViewById(R.id.edit_button);
+        Button add_text_button= findViewById(R.id.add_text_button);
+
         final EditText top_text= findViewById(R.id.top_text);
         final EditText bottom_text= findViewById(R.id.bottom_text);
         final ImageView imageView= findViewById(R.id.preview_image);
@@ -52,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 pickImage(view);
             }
         });
-        preview_button.setOnClickListener(new View.OnClickListener() {
+        add_text_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!checkPermissionForReadExtertalStorage()){
@@ -75,14 +79,11 @@ public class MainActivity extends AppCompatActivity {
                     paint.setTypeface(typeface);
 
                     paint.setTextAlign(Paint.Align.CENTER);
-                    //TextPaint mTextPaint=new TextPaint();
                     TextPaint t= new TextPaint(paint);
                     t.setShadowLayer(3,2,2, Color.BLACK);
                     StaticLayout mTopTextLayout = new StaticLayout(top_text.getText().toString(),t,
                             canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 
-                    //canvas.save();
-                    // calculate x and y position where your text will be placed
 
                     int textX = canvas.getWidth()/2;
                     int textY = 50;
@@ -91,23 +92,38 @@ public class MainActivity extends AppCompatActivity {
                     mTopTextLayout.draw(canvas);
                     StaticLayout mBottomTextLayout = new StaticLayout(bottom_text.getText().toString(),t,
                             canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL,1.0f,0.0f,false);
-                    //canvas.save();
+
                     int y= canvas.getHeight()-200;
                     canvas.translate(1,y);
                     mBottomTextLayout.draw(canvas);
-                    //canvas.restore();
-                /**
-
-                int x= canvas.getWidth()/2;
-                canvas.drawText(top_text.getText().toString(),x,100,paint);
-                canvas.drawText(bottom_text.getText().toString(),x,canvas.getHeight()-30,paint);**/
                 imageView.setImageBitmap(bitmap2);
+                mutableBitmap=bitmap2;
                 }
                 else
                     Log.e("error","null");
             }
         });
+
+        edit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(getApplicationContext(), ImageActivity.class);
+                intent.putExtra("purpose","EditImage");
+                startActivity(intent);
+            }
+        });
+
+        preview_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(getApplicationContext(), ImageActivity.class);
+                intent.putExtra("purpose","PreviewImage");
+                startActivity(intent);
+            }
+        });
+
     }
+
     public boolean checkPermissionForReadExtertalStorage() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int result = context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -158,10 +174,10 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
 
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                // Log.d(TAG, String.valueOf(bitmap));
+               Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
 
-                ImageView imageView = (ImageView) findViewById(R.id.preview_image);
+                ImageView imageView = findViewById(R.id.preview_image);
+                mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 imageView.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
