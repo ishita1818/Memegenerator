@@ -48,7 +48,6 @@ public class ImageActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        //return super.onPrepareOptionsMenu(menu);
         if(purpose.equals("PreviewImage")){
             MenuItem m1= menu.findItem(R.id.crop);
             m1.setVisible(false);
@@ -116,7 +115,7 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     Uri path;
-    String nameOfImage;
+
     private void saveImage() {
         OutputStream output;
         // Find the SD Card path
@@ -128,15 +127,13 @@ public class ImageActivity extends AppCompatActivity {
         dir.mkdir();
 
         // Create a name for the saved image
-        nameOfImage= "meme"+System.currentTimeMillis()+ ".png";
-        File file = new File(dir, "meme"+System.currentTimeMillis()+ ".png");
+        String nameOfImage= "meme"+System.currentTimeMillis()+ ".png";
+        File file = new File(dir, nameOfImage);
         path = Uri.parse(file.getAbsolutePath());
 
         try {
-
             output = new FileOutputStream(file);
-
-            // Compress into png format image from 0% - 100
+            // Compress into image of png format
             MainActivity.mutableBitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
             output.flush();
             output.close();
