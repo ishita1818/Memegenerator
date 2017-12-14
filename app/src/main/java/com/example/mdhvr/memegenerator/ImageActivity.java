@@ -1,10 +1,13 @@
 package com.example.mdhvr.memegenerator;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +22,7 @@ public class ImageActivity extends AppCompatActivity {
 
     private String purpose;
     private ImageView imageView;
+    private Bitmap imageBitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +39,10 @@ public class ImageActivity extends AppCompatActivity {
         }
 
         imageView= findViewById(R.id.image_activity_image);
-        imageView.setImageBitmap(MainActivity.mutableBitmap);
-
+        if(MainActivity.mutableBitmap!=null)
+            imageView.setImageBitmap(MainActivity.mutableBitmap);
+        else
+            imageView.setImageResource(R.drawable.placeholder);
     }
 
     @Override
@@ -99,14 +105,17 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     private void shareImage() {
-
-        final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("image/png");
-        shareIntent.putExtra(Intent.EXTRA_STREAM, path);
-        startActivity(Intent.createChooser(shareIntent,"Share meme using :"));
+        if(path==null){
+            saveImage();
+        }
+            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("image/png");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, path);
+            startActivity(Intent.createChooser(shareIntent, "Share meme using :"));
     }
 
     private void setImageInMainActivity() {
+        //TODO
 
     }
 
@@ -143,11 +152,34 @@ public class ImageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Toast.makeText(getApplicationContext(),"Image Saved",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"Meme Saved",Toast.LENGTH_SHORT).show();
     }
 
     private void deleteImage() {
+        showDeleteDialog();
 
+    }
+
+    private void showDeleteDialog() {
+        AlertDialog.Builder builder= new AlertDialog.Builder(ImageActivity.this);
+        builder.setMessage("Are you sure you want to delete this meme ? Don't regret afterwards...");
+        builder.setPositiveButton("I don't give a damn. Just delete it!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                imageView.setImageResource(R.drawable.placeholder);
+                Toast.makeText(ImageActivity.this,"Meme deleted",Toast.LENGTH_SHORT).show();
+                MainActivity.mutableBitmap=((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                finish();
+            }
+        });
+        builder.setNegativeButton("Thanks,it was by mistake!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setTitle("*MemeIsGonnaBeDeleted*");
+        builder.create().show();
     }
 
     private void cropImage() {
