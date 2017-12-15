@@ -47,7 +47,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="4dp"
+                android:id="@+id/top_text_color_picker"
+                android:background="@mipmap/color_pick"/>
             <EditText
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -55,15 +60,16 @@
                 android:layout_margin="4dp"
                 android:hint="Top Text"
                 android:id="@+id/top_text"/>
+
             <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:tag="TextSize"
                 android:background="@color/colorPrimary"
                 android:popupBackground="@color/colorPrimary"
                 android:spinnerMode="dropdown"
-                android:layout_marginRight="6dp"
                 android:layout_marginLeft="4dp"
+                android:layout_marginRight="6dp"
                 android:id="@+id/top_text_spinner"/>
 
         </LinearLayout>
@@ -71,7 +77,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="4dp"
+                android:id="@+id/bottom_text_color_picker"
+                android:background="@mipmap/color_pick"/>
         <EditText
             android:layout_width="0dp"
             android:layout_weight="1
@@ -81,8 +92,8 @@
             android:hint="Bottom Text"
             android:id="@+id/bottom_text"/>
         <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:popupBackground="@color/colorPrimary"
             android:background="@color/colorPrimary"
             android:spinnerMode="dropdown"
@@ -116,7 +127,5 @@
                 android:id="@+id/preview_buttton"
                 android:layout_weight="1"/>
         </LinearLayout>
-
-
     </LinearLayout>
 </ScrollView>

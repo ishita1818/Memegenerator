@@ -27,16 +27,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
+import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
+
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int READ_STORAGE_PERMISSION_REQUEST_CODE = 100;
     private Context context;
     public static Bitmap mutableBitmap;
     private ImageView imageView;
     private Spinner top_spinner, bottom_spinner;
     private int top_text_size, bottom_text_size;
+    private int top_text_color= Color.WHITE, bottom_text_color= Color.WHITE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         Button preview_button= findViewById(R.id.preview_buttton);
         Button edit_button= findViewById(R.id.edit_button);
         Button add_text_button= findViewById(R.id.add_text_button);
+        Button top_color_picker = findViewById(R.id.top_text_color_picker);
+        Button bottom_color_picker= findViewById(R.id.bottom_text_color_picker);
 
         final EditText top_text= findViewById(R.id.top_text);
         final EditText bottom_text= findViewById(R.id.bottom_text);
@@ -76,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 Canvas canvas = new Canvas(bitmap2);
                 //for top text
                     Paint paint= new Paint();
-                    paint.setColor(Color.WHITE);
+                    paint.setColor(top_text_color);
 
                     paint.setTextSize(top_text_size);
                     Typeface typeface= Typeface.createFromAsset(getAssets(),"impact.ttf");
@@ -97,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
                  //foe bottom text
                     Paint bottomPaint= new Paint();
-                    bottomPaint.setColor(Color.WHITE);
+                    bottomPaint.setColor(bottom_text_color);
                     bottomPaint.setTextSize(bottom_text_size);
                     bottomPaint.setTypeface(typeface);
                     bottomPaint.setTextAlign(Paint.Align.CENTER);
@@ -133,6 +138,36 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent= new Intent(context, ImageActivity.class);
                 intent.putExtra("purpose","PreviewImage");
                 startActivity(intent);
+            }
+        });
+
+        top_color_picker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ColorPicker c= new ColorPicker(MainActivity.this,89,77,255);
+                c.show();
+                c.setCallback(new ColorPickerCallback() {
+                    @Override
+                    public void onColorChosen(int color) {
+                        top_text_color=color;
+                        c.dismiss();
+                    }
+                });
+            }
+        });
+
+        bottom_color_picker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ColorPicker c= new ColorPicker(MainActivity.this,89,77,255);
+                c.show();
+                c.setCallback(new ColorPickerCallback() {
+                    @Override
+                    public void onColorChosen(int color) {
+                        bottom_text_color=color;
+                        c.dismiss();
+                    }
+                });
             }
         });
 
