@@ -42,19 +42,55 @@
                 android:id="@+id/edit_button"
                 android:layout_weight="1"/>
         </LinearLayout>
-        <EditText
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:hint="Top Text"
-            android:id="@+id/top_text"/>
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Top Text"
+                android:id="@+id/top_text"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="TextSize"
+                android:background="@color/colorPrimary"
+                android:popupBackground="@color/colorPrimary"
+                android:spinnerMode="dropdown"
+                android:layout_marginRight="6dp"
+                android:layout_marginLeft="4dp"
+                android:id="@+id/top_text_spinner"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1
+"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:hint="Bottom Text"
             android:id="@+id/bottom_text"/>
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:popupBackground="@color/colorPrimary"
+            android:background="@color/colorPrimary"
+            android:spinnerMode="dropdown"
+            android:layout_marginLeft="4dp"
+            android:id="@+id/bottom_text_spinner"
+            android:layout_marginRight="6dp"/>
+
+    </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

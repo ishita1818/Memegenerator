@@ -20,9 +20,12 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import java.io.IOException;
 
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private Context context;
     public static Bitmap mutableBitmap;
     private ImageView imageView;
+    private Spinner top_spinner, bottom_spinner;
+    private int top_text_size, bottom_text_size;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
         final EditText top_text= findViewById(R.id.top_text);
         final EditText bottom_text= findViewById(R.id.bottom_text);
         imageView= findViewById(R.id.preview_image);
+
+        top_spinner=findViewById(R.id.top_text_spinner);
+        bottom_spinner= findViewById(R.id.bottom_text_spinner);
+
+        setupSpinners();
+
         choose_image_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,15 +74,17 @@ public class MainActivity extends AppCompatActivity {
                 if(bitmap2!=null){
 
                 Canvas canvas = new Canvas(bitmap2);
+                //for top text
                     Paint paint= new Paint();
                     paint.setColor(Color.WHITE);
-                    paint.setTextSize(getResources().getDimensionPixelSize(R.dimen.myFontSize));
+
+                    paint.setTextSize(top_text_size);
                     Typeface typeface= Typeface.createFromAsset(getAssets(),"impact.ttf");
                     paint.setTypeface(typeface);
 
                     paint.setTextAlign(Paint.Align.CENTER);
                     TextPaint t= new TextPaint(paint);
-                    t.setShadowLayer(3,2,2, Color.BLACK);
+                    t.setShadowLayer(5,2,2, Color.BLACK);
                     StaticLayout mTopTextLayout = new StaticLayout(top_text.getText().toString(),t,
                             canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 
@@ -81,12 +94,22 @@ public class MainActivity extends AppCompatActivity {
 
                     canvas.translate(textX, textY);
                     mTopTextLayout.draw(canvas);
-                    StaticLayout mBottomTextLayout = new StaticLayout(bottom_text.getText().toString(),t,
-                            canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL,1.0f,0.0f,false);
 
+                 //foe bottom text
+                    Paint bottomPaint= new Paint();
+                    bottomPaint.setColor(Color.WHITE);
+                    bottomPaint.setTextSize(bottom_text_size);
+                    bottomPaint.setTypeface(typeface);
+                    bottomPaint.setTextAlign(Paint.Align.CENTER);
+                    TextPaint t2= new TextPaint(bottomPaint);
+                    t2.setShadowLayer(5,2,2,Color.BLACK);
+                    StaticLayout mBottomTextLayout = new StaticLayout(bottom_text.getText().toString(),t2,
+                            canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL,1.0f,0.0f,false);
                     int y= canvas.getHeight()-200;
                     canvas.translate(1,y);
                     mBottomTextLayout.draw(canvas);
+
+                //now set the image view and store the bitmap for further use.
                 imageView.setImageBitmap(bitmap2);
                 mutableBitmap=bitmap2;
                 }
@@ -113,6 +136,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    private void setupSpinners() {
+        ArrayAdapter spinnerAdapter = ArrayAdapter.createFromResource(context,
+                R.array.textSizeArray,android.R.layout.simple_spinner_dropdown_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        top_spinner.setAdapter(spinnerAdapter);
+        bottom_spinner.setAdapter(spinnerAdapter);
+        top_spinner.setSelection(6);
+        top_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                top_text_size =  Integer.parseInt(adapterView.getItemAtPosition(i).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                top_text_size= 70;
+            }
+        });
+        bottom_spinner.setSelection(6);
+        bottom_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                bottom_text_size = Integer.parseInt( adapterView.getItemAtPosition(i).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                bottom_text_size= 70;
+            }
+        });
     }
 
     private void hideKeyBoard(){
