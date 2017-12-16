@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onColorChosen(int color) {
                         bottom_text_color=color;
+
                         c.dismiss();
                     }
                 });

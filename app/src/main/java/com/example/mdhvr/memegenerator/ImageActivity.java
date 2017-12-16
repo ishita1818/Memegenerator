@@ -122,6 +122,9 @@ public class ImageActivity extends AppCompatActivity {
 
     private void drawOnImage() {
 
+        Intent intent= new Intent(ImageActivity.this, PaintActivity.class);
+        startActivity(intent);
+
     }
 
     Uri path;
@@ -159,6 +162,33 @@ public class ImageActivity extends AppCompatActivity {
     private void deleteImage() {
         showDeleteDialog();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if(purpose.equals("EditImage")){
+            showAlertDialog();
+        }
+       // super.onBackPressed();
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder= new AlertDialog.Builder(ImageActivity.this);
+        builder.setMessage("Changes may not be saved...");
+        builder.setPositiveButton("Discard.", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("Keep Editing!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     private void showDeleteDialog() {

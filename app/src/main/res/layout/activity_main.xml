@@ -62,7 +62,7 @@
                 android:id="@+id/top_text"/>
 
             <Spinner
-                android:layout_width="40dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:tag="TextSize"
                 android:background="@color/colorPrimary"
@@ -92,7 +92,7 @@
             android:hint="Bottom Text"
             android:id="@+id/bottom_text"/>
         <Spinner
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:popupBackground="@color/colorPrimary"
             android:background="@color/colorPrimary"
