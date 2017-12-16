@@ -5,48 +5,229 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
+
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import android.widget.Spinner;
+
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
+import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
+
 
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity implements topfragment.topfragmentlistener {
+public class MainActivity extends AppCompatActivity {
 
+    private Context context;
+    public static Bitmap mutableBitmap;
+    private ImageView imageView;
+    private Spinner top_spinner, bottom_spinner;
+    private int top_text_size, bottom_text_size;
+    private int top_text_color= Color.WHITE, bottom_text_color= Color.WHITE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/impact.ttf");
-        TextView topTextView = (TextView)findViewById(R.id.toptextview);
-        TextView bottomTextView = (TextView)findViewById(R.id.bottomtextview);
+        context= getApplicationContext();
+        hideKeyBoard();
+        Button choose_image_button= findViewById(R.id.choose_image_button);
+        Button preview_button= findViewById(R.id.preview_buttton);
+        Button edit_button= findViewById(R.id.edit_button);
+        Button add_text_button= findViewById(R.id.add_text_button);
+        Button top_color_picker = findViewById(R.id.top_text_color_picker);
+        Button bottom_color_picker= findViewById(R.id.bottom_text_color_picker);
 
-        topTextView.setTypeface(type);
-        bottomTextView.setTypeface(type);
+        final EditText top_text= findViewById(R.id.top_text);
+        final EditText bottom_text= findViewById(R.id.bottom_text);
+        imageView= findViewById(R.id.preview_image);
+
+        top_spinner=findViewById(R.id.top_text_spinner);
+        bottom_spinner= findViewById(R.id.bottom_text_spinner);
+
+        setupSpinners();
+
+        choose_image_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickImage(view);
+            }
+        });
+        add_text_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                hideKeyBoard();
+
+                Bitmap bitmap1 = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                Bitmap bitmap2 = bitmap1.copy(Bitmap.Config.ARGB_8888, true);
+                if(bitmap2!=null){
+
+                Canvas canvas = new Canvas(bitmap2);
+                //for top text
+                    Paint paint= new Paint();
+                    paint.setColor(top_text_color);
+
+                    paint.setTextSize(top_text_size);
+                    Typeface typeface= Typeface.createFromAsset(getAssets(),"impact.ttf");
+                    paint.setTypeface(typeface);
+
+                    paint.setTextAlign(Paint.Align.CENTER);
+                    TextPaint t= new TextPaint(paint);
+                    t.setShadowLayer(5,2,2, Color.BLACK);
+                    StaticLayout mTopTextLayout = new StaticLayout(top_text.getText().toString(),t,
+                            canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+
+
+                    int textX = canvas.getWidth()/2;
+                    int textY = 50;
+
+                    canvas.translate(textX, textY);
+                    mTopTextLayout.draw(canvas);
+
+                 //foe bottom text
+                    Paint bottomPaint= new Paint();
+                    bottomPaint.setColor(bottom_text_color);
+                    bottomPaint.setTextSize(bottom_text_size);
+                    bottomPaint.setTypeface(typeface);
+                    bottomPaint.setTextAlign(Paint.Align.CENTER);
+                    TextPaint t2= new TextPaint(bottomPaint);
+                    t2.setShadowLayer(5,2,2,Color.BLACK);
+                    StaticLayout mBottomTextLayout = new StaticLayout(bottom_text.getText().toString(),t2,
+                            canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL,1.0f,0.0f,false);
+                    int y= canvas.getHeight()-200;
+                    canvas.translate(1,y);
+                    mBottomTextLayout.draw(canvas);
+
+                //now set the image view and store the bitmap for further use.
+                imageView.setImageBitmap(bitmap2);
+                mutableBitmap=bitmap2;
+                }
+                else
+                    Log.e("error","null");
+            }
+        });
+
+        edit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(context, ImageActivity.class);
+                intent.putExtra("purpose","EditImage");
+                startActivity(intent);
+            }
+        });
+
+        preview_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(context, ImageActivity.class);
+                intent.putExtra("purpose","PreviewImage");
+                startActivity(intent);
+            }
+        });
+
+        top_color_picker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ColorPicker c= new ColorPicker(MainActivity.this,89,77,255);
+                c.show();
+                c.setCallback(new ColorPickerCallback() {
+                    @Override
+                    public void onColorChosen(int color) {
+                        top_text_color=color;
+                        c.dismiss();
+                    }
+                });
+            }
+        });
+
+        bottom_color_picker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ColorPicker c= new ColorPicker(MainActivity.this,89,77,255);
+                c.show();
+                c.setCallback(new ColorPickerCallback() {
+                    @Override
+                    public void onColorChosen(int color) {
+                        bottom_text_color=color;
+
+                        c.dismiss();
+                    }
+                });
+            }
+        });
+
+    }
+
+
+    private void setupSpinners() {
+        ArrayAdapter spinnerAdapter = ArrayAdapter.createFromResource(context,
+                R.array.textSizeArray,android.R.layout.simple_spinner_dropdown_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        top_spinner.setAdapter(spinnerAdapter);
+        bottom_spinner.setAdapter(spinnerAdapter);
+        top_spinner.setSelection(6);
+        top_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                top_text_size = Integer.parseInt(adapterView.getItemAtPosition(i).toString());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                top_text_size= 70;
+            }
+        });
+        bottom_spinner.setSelection(6);
+        bottom_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                bottom_text_size = Integer.parseInt( adapterView.getItemAtPosition(i).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                bottom_text_size= 70;
+            }
+        });
+    }
+
+    private void hideKeyBoard(){
+        View view= MainActivity.this.getCurrentFocus();
+        if(view!=null) {
+            view.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
     }
 
     @Override
-    public void createMeme(String top, String bottom) {
-
-        bottomfragment bottomf = (bottomfragment) getSupportFragmentManager().findFragmentById(R.id.fragment2);
-        bottomf.setMemetext(top, bottom);
-
-        InputMethodManager inputManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                InputMethodManager.HIDE_NOT_ALWAYS);
-
+    protected void onResume() {
+        super.onResume();
+        if(mutableBitmap!=null)
+            imageView.setImageBitmap(mutableBitmap);
     }
-
 
     private int PICK_IMAGE_REQUEST = 1;
     private static final String TAG = "MainActivity";
@@ -77,14 +258,13 @@ public class MainActivity extends AppCompatActivity implements topfragment.topfr
             Log.d(TAG, DatabaseUtils.dumpCursorToString(cursor));
 
             int columnIndex = cursor.getColumnIndex(projection[0]);
-            String picturePath = cursor.getString(columnIndex); // returns null
             cursor.close();
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                // Log.d(TAG, String.valueOf(bitmap));
+               Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
 
-                ImageView imageView = (ImageView) findViewById(R.id.image);
+                ImageView imageView = findViewById(R.id.preview_image);
+                mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 imageView.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();

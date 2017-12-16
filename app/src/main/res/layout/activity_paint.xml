@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/materialcolorpicker__black"
+    tools:context="com.example.mdhvr.memegenerator.PaintActivity">
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="4dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/pen"
+            android:id="@+id/paint_pen"
+            android:layout_margin="4dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/undo"
+            android:layout_margin="4dp"
+            android:id="@+id/panit_undo"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/pallete"
+            android:layout_margin="4dp"
+            android:id="@+id/paint_pallete"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/navigation_right"
+            android:layout_margin="4dp"
+            android:id="@+id/paint_nav_right"/>
+    </LinearLayout>
+</RelativeLayout>
