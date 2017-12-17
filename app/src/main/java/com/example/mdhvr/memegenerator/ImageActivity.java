@@ -9,10 +9,19 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,12 +31,36 @@ public class ImageActivity extends AppCompatActivity {
 
     private String purpose;
     private ImageView imageView;
-    private Bitmap imageBitmap;
+    public static Bitmap imageBitmap;
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
+    private FacebookCallback<Sharer.Result>shareCallback = new FacebookCallback<Sharer.Result>() {
+        @Override
+        public void onSuccess(Sharer.Result result) {
+            Toast.makeText(ImageActivity.this,"Posted succesfully",Toast.LENGTH_SHORT).show();
+            Log.d("Facebook","Success!");
+        }
+
+        @Override
+        public void onCancel() {
+            Toast.makeText(ImageActivity.this,"Post cancelled",Toast.LENGTH_SHORT).show();
+            Log.d("Facebook","Canceled!");
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+            Toast.makeText(ImageActivity.this,"Error in posting",Toast.LENGTH_SHORT).show();
+            Log.d("Facebook","Error!");
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
         Intent intent= getIntent();
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+        shareDialog.registerCallback(callbackManager,shareCallback);
         purpose= intent.getStringExtra("purpose");
         if(purpose.equals("PreviewImage")){
             setTitle("Preview");
@@ -39,10 +72,18 @@ public class ImageActivity extends AppCompatActivity {
         }
 
         imageView= findViewById(R.id.image_activity_image);
-        if(MainActivity.mutableBitmap!=null)
+        if(MainActivity.mutableBitmap!=null) {
             imageView.setImageBitmap(MainActivity.mutableBitmap);
+            imageBitmap=MainActivity.mutableBitmap;
+        }
         else
             imageView.setImageResource(R.drawable.placeholder);
+    }
+
+    @Override
+    protected void onResume() {
+        imageView.setImageBitmap(imageBitmap);
+        super.onResume();
     }
 
     @Override
@@ -61,6 +102,12 @@ public class ImageActivity extends AppCompatActivity {
             m2.setVisible(false);
             MenuItem m3 = menu.findItem(R.id.share);
             m3.setVisible(true);
+            MenuItem m4= menu.findItem(R.id.done);
+            m4.setVisible(false);
+            MenuItem m5= menu.findItem(R.id.save);
+            m5.setVisible(true);
+            MenuItem m6=menu.findItem(R.id.facebook);
+            m6.setVisible(true);
 
         }
         if(purpose.equals("EditImage")){
@@ -70,6 +117,12 @@ public class ImageActivity extends AppCompatActivity {
             m2.setVisible(true);
             MenuItem m3 = menu.findItem(R.id.share);
             m3.setVisible(false);
+            MenuItem m6=menu.findItem(R.id.facebook);
+            m6.setVisible(false);
+            MenuItem m4= menu.findItem(R.id.save);
+            m4.setVisible(false);
+            MenuItem m5= menu.findItem(R.id.done);
+            m5.setVisible(true);
         }
         return true;
     }
@@ -85,10 +138,9 @@ public class ImageActivity extends AppCompatActivity {
                 deleteImage();
                 return true;
             case R.id.save:
-                if(purpose.equals("PreviewImage")) {
-                    saveImage();
-                }
-                else
+                saveImage();
+                return true;
+            case R.id.done:
                 setImageView();
                 return true;
             case R.id.draw:
@@ -97,6 +149,8 @@ public class ImageActivity extends AppCompatActivity {
             case R.id.share:
                 shareImage();
                 return true;
+            case R.id.facebook:
+                shareOnFb();
 
         }
 
@@ -114,9 +168,9 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     private void setImageView() {
-        //TODO
 
-
+        MainActivity.mutableBitmap= imageBitmap;
+        finish();
 
     }
 
@@ -219,6 +273,14 @@ public class ImageActivity extends AppCompatActivity {
         if(path==null){
             saveImage();
         }
+    }
+    private void shareOnFb(){
+        if(path==null)
+            saveImage();
+        Bitmap image=MainActivity.mutableBitmap;
+        SharePhoto photo=new SharePhoto.Builder().setBitmap(image).build();
+        SharePhotoContent photoContent = new SharePhotoContent.Builder().addPhoto(photo).build();
+        shareDialog.show(photoContent);
     }
 
 }

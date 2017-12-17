@@ -10,5 +10,6 @@
     android:layout_margin="4dp"
     android:layout_height="wrap_content"
     android:id="@+id/image_activity_image"
-    android:src="@drawable/placeholder"/>
+    android:src="@drawable/placeholder"
+    android:layout_gravity="center"/>
 </ScrollView>
