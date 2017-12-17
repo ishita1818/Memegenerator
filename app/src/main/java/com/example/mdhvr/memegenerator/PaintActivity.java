@@ -15,6 +15,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
+import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
+
 /*
    Created by Ishita sharma on 15/12/17
  */
@@ -23,6 +26,16 @@ public class PaintActivity extends AppCompatActivity {
     private  ImageView left_to_right_imageView;
     private Bitmap paintBitmap;
     private ImageView paintImageView;
+
+    private  Canvas canvas;
+    private Matrix matrix;
+    private Paint paint;
+    float downx = 0;
+    float downy = 0;
+    float upx = 0;
+    float upy = 0;
+    Bitmap alteredBitmap;
+    private int brush_color= Color.MAGENTA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +73,7 @@ public class PaintActivity extends AppCompatActivity {
                     //Hide the utility icons
                     pen.setVisibility(View.GONE);
                     undo.setVisibility(View.GONE);
+                    drawOnBitmap();
                 }
                 else if(left_to_right_imageView.getDrawable().getConstantState()
                         ==getResources().getDrawable(R.mipmap.navigation_right).getConstantState()){
@@ -115,23 +129,30 @@ public class PaintActivity extends AppCompatActivity {
             }
         });
 
+        //add onclick for pallete
+        pallete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ColorPicker c= new ColorPicker(PaintActivity.this,89,77,255);
+                c.show();
+                c.setCallback(new ColorPickerCallback() {
+                    @Override
+                    public void onColorChosen(int color) {
+                        brush_color=color;
+                        drawOnBitmap();
+                        c.dismiss();
+                    }
+                });
+            }
+        });
     }
-
-    private  Canvas canvas;
-    private Matrix matrix;
-    private Paint paint;
-    float downx = 0;
-    float downy = 0;
-    float upx = 0;
-    float upy = 0;
-    Bitmap alteredBitmap;
 
     private void drawOnBitmap() {
 
         alteredBitmap= Bitmap.createBitmap(paintBitmap.getWidth(),paintBitmap.getHeight(),paintBitmap.getConfig());
        canvas =new Canvas(alteredBitmap);
         paint= new Paint();
-        paint.setColor(Color.GREEN);
+        paint.setColor(brush_color);
         paint.setStrokeWidth(5);
         matrix= new Matrix();
         canvas.drawBitmap(paintBitmap,matrix,paint);
