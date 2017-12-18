@@ -9,11 +9,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -133,6 +134,7 @@ public class ImageActivity extends AppCompatActivity {
             case R.id.crop:
                 cropImage();
                 return true;
+
             case R.id.delete:
                 deleteImage();
                 return true;
@@ -269,9 +271,8 @@ public class ImageActivity extends AppCompatActivity {
     private int myRequestCode=100;
 
     private void cropImage() {
-        if(path==null){
-            saveImage();
-        }
+        Intent intent = new Intent(ImageActivity.this,CropActivity.class);
+        startActivity(intent);
     }
     private void shareOnFb(){
         if(path==null)
