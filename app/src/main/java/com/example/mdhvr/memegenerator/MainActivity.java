@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         bottom_spinner= findViewById(R.id.bottom_text_spinner);
 
         setupSpinners();
+        //when there is no image chosen
+        Bitmap bitmap1 = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        Bitmap bitmap2 = bitmap1.copy(Bitmap.Config.ARGB_8888, true);
+        mutableBitmap=bitmap2;
 
         choose_image_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 pickImage(view);
             }
         });
+
         add_text_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

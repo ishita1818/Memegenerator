@@ -37,7 +37,6 @@ public class PaintActivity extends AppCompatActivity {
     Bitmap alteredBitmap;
     private int brush_color= Color.MAGENTA;
     Toolbar bottom_toolbar;
-    SeekBar seekbar;
     private int stroke_width=5;
 
     @Override
@@ -52,7 +51,6 @@ public class PaintActivity extends AppCompatActivity {
         ImageView cancel = findViewById(R.id.paint_cancel);
         final ImageView pallete = findViewById(R.id.paint_pallete);
         bottom_toolbar= findViewById(R.id.paint_bottom_toolbar);
-        seekbar= findViewById(R.id.paint_seekbar);
         //set image bitmap
         paintImageView.setImageBitmap(ImageActivity.imageBitmap);
         paintBitmap=ImageActivity.imageBitmap;
