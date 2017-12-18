@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.takusemba.cropme.CropView;
@@ -19,6 +20,12 @@ public class CropActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop);
+
+        View decorView = getWindow().getDecorView();
+        // Hide the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
         cropView= findViewById(R.id.crop_view);
         Bitmap crop_bitmap = Bitmap.createBitmap(ImageActivity.imageBitmap);
         Log.e("CropActivity",crop_bitmap.getWidth()+" "+crop_bitmap.getHeight());
