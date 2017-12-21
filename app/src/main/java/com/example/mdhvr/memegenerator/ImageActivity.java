@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,7 +32,7 @@ public class ImageActivity extends AppCompatActivity {
 
     private String purpose;
     private ImageView imageView;
-    private Bitmap imageBitmap;
+    public static Bitmap imageBitmap;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
     private FacebookCallback<Sharer.Result>shareCallback = new FacebookCallback<Sharer.Result>() {
@@ -57,6 +58,12 @@ public class ImageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
+
+        View decorView = getWindow().getDecorView();
+        // Hide the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
         Intent intent= getIntent();
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
@@ -72,10 +79,18 @@ public class ImageActivity extends AppCompatActivity {
         }
 
         imageView= findViewById(R.id.image_activity_image);
-        if(MainActivity.mutableBitmap!=null)
+        if(MainActivity.mutableBitmap!=null){
             imageView.setImageBitmap(MainActivity.mutableBitmap);
+            imageBitmap=MainActivity.mutableBitmap;
+        }
         else
             imageView.setImageResource(R.drawable.placeholder);
+    }
+
+    @Override
+    protected void onResume() {
+        imageView.setImageBitmap(imageBitmap);
+        super.onResume();
     }
 
     @Override
@@ -94,8 +109,12 @@ public class ImageActivity extends AppCompatActivity {
             m2.setVisible(false);
             MenuItem m3 = menu.findItem(R.id.share);
             m3.setVisible(true);
-            MenuItem m4=menu.findItem(R.id.facebook);
-            m4.setVisible(true);
+            MenuItem m4= menu.findItem(R.id.done);
+            m4.setVisible(false);
+            MenuItem m5= menu.findItem(R.id.save);
+            m5.setVisible(true);
+            MenuItem m6=menu.findItem(R.id.facebook);
+            m6.setVisible(true);
 
         }
         if(purpose.equals("EditImage")){
@@ -105,8 +124,12 @@ public class ImageActivity extends AppCompatActivity {
             m2.setVisible(true);
             MenuItem m3 = menu.findItem(R.id.share);
             m3.setVisible(false);
-            MenuItem m4=menu.findItem(R.id.facebook);
+            MenuItem m4= menu.findItem(R.id.save);
             m4.setVisible(false);
+            MenuItem m5= menu.findItem(R.id.done);
+            m5.setVisible(true);
+            MenuItem m6=menu.findItem(R.id.facebook);
+            m6.setVisible(false);
         }
         return true;
     }
@@ -118,14 +141,14 @@ public class ImageActivity extends AppCompatActivity {
             case R.id.crop:
                 cropImage();
                 return true;
+
             case R.id.delete:
                 deleteImage();
                 return true;
             case R.id.save:
-                if(purpose.equals("PreviewImage")) {
-                    saveImage();
-                }
-                else
+                saveImage();
+                return true;
+            case R.id.done:
                 setImageView();
                 return true;
             case R.id.draw:
@@ -153,9 +176,9 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     private void setImageView() {
-        //TODO
 
-
+        MainActivity.mutableBitmap= imageBitmap;
+        finish();
 
     }
 
@@ -255,9 +278,8 @@ public class ImageActivity extends AppCompatActivity {
     private int myRequestCode=100;
 
     private void cropImage() {
-        if(path==null){
-            saveImage();
-        }
+        Intent intent = new Intent(ImageActivity.this,CropActivity.class);
+        startActivity(intent);
     }
     private void shareOnFb(){
         if(path==null)
