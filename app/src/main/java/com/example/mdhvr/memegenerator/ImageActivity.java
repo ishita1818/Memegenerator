@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -57,6 +58,12 @@ public class ImageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
+
+        View decorView = getWindow().getDecorView();
+        // Hide the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
         Intent intent= getIntent();
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
@@ -72,7 +79,7 @@ public class ImageActivity extends AppCompatActivity {
         }
 
         imageView= findViewById(R.id.image_activity_image);
-        if(MainActivity.mutableBitmap!=null) {
+        if(MainActivity.mutableBitmap!=null){
             imageView.setImageBitmap(MainActivity.mutableBitmap);
             imageBitmap=MainActivity.mutableBitmap;
         }
@@ -117,12 +124,12 @@ public class ImageActivity extends AppCompatActivity {
             m2.setVisible(true);
             MenuItem m3 = menu.findItem(R.id.share);
             m3.setVisible(false);
-            MenuItem m6=menu.findItem(R.id.facebook);
-            m6.setVisible(false);
             MenuItem m4= menu.findItem(R.id.save);
             m4.setVisible(false);
             MenuItem m5= menu.findItem(R.id.done);
             m5.setVisible(true);
+            MenuItem m6=menu.findItem(R.id.facebook);
+            m6.setVisible(false);
         }
         return true;
     }
@@ -134,6 +141,7 @@ public class ImageActivity extends AppCompatActivity {
             case R.id.crop:
                 cropImage();
                 return true;
+
             case R.id.delete:
                 deleteImage();
                 return true;
@@ -193,7 +201,7 @@ public class ImageActivity extends AppCompatActivity {
                 + "/MemeGenerator/");
         dir.mkdir();
 
-        // Create a name for the saved image
+        // Create a name for the saved image....
         String nameOfImage= "meme"+System.currentTimeMillis()+ ".png";
         File file = new File(dir, nameOfImage);
         path = Uri.parse(file.getAbsolutePath());
@@ -270,9 +278,8 @@ public class ImageActivity extends AppCompatActivity {
     private int myRequestCode=100;
 
     private void cropImage() {
-        if(path==null){
-            saveImage();
-        }
+        Intent intent = new Intent(ImageActivity.this,CropActivity.class);
+        startActivity(intent);
     }
     private void shareOnFb(){
         if(path==null)
