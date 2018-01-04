@@ -10,7 +10,7 @@
  <table>
     <tr>
      <td><img src="docs/Screenshot_1.png" height="420" width="270"></td>
-     <td><img src="docs/Screenshot_2.png"height="420" width="270"></td>
+     <td><img src="docs/Screenshot_2.png" height="420" width="270"></td>
     </tr>
   </table>
 
